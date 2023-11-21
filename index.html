@@ -13,7 +13,7 @@
     <div class="d-flex justify-content-between">
       <h1 class="h2">Gilos.uz/smartphones</h1>
 
-      <button class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#edit-student-modal">
+      <button class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#add-student-modal">
         <span class="me-2">Add product</span>
         <i class="fa-solid fa-plus"></i>
       </button>
@@ -22,10 +22,10 @@
     <div class="row mt-5">
       <div class="col-3">
         <h2 class="h4 mb-4">Filter</h2>
-        <form action="#">
+        <form action="#" class="filter-form">
           <div class="mb-3">
             <label for="search" class="form-label">Search</label>
-            <input type="search" class="form-control" id="search" placeholder="Falonchi">
+            <input type="search" class="form-control input-name__filter" id="search" placeholder="Falonchi">
           </div>
           <div class="mb-3">
             <label class="form-label">Price</label>
@@ -73,26 +73,27 @@
     </div>
   </div>
 
-  <div class="modal fade" id="edit-student-modal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
+  <div class="modal fade" id="add-student-modal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="editStudentModalLabel">Add product</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-form modal-body">
-          <form>
+          <form class="add-form">
             <div class="mb-3">
               <label for="product-title" class="form-label">Title</label>
-              <input type="text" class="form-control" id="product-title" placeholder="Falon telefon">
+              <input type="text" class="form-control form-add-name" id="product-title" placeholder="Falon telefon">
             </div>
             <div class="mb-3">
               <label for="price" class="form-label">Narxi</label>
-              <input type="number" class="form-control" id="price" placeholder="12400000">
+              <input type="number" class="form-control form-add-price" id="price" placeholder="12400000">
             </div>
             <div class="mb-3">
               <label for="product-manufacturer" class="form-label">Manufacturer</label>
-              <select class="form-select" id="product-manufacturer">
+              <select class="form-select form-add-select" id="product-manufacturer" name="manufacturer">
                 <option  selected disabled value="0">Select a manufacturer</option>
                 <!-- manufacturers array bu yerga kelishi kerak -->
               </select>
@@ -100,9 +101,9 @@
 
             <div class="mb-3">
               <label for="benefits" class="form-label">Benefits</label>
-              <input type="text" class="form-control" id="benefits" placeholder="150">
+              <input type="text" class="form-control form-add-benefits" id="benefits" placeholder="150">
 
-              <ul class="d-flex flex-wrap list-unstyled mt-3">
+              <ul class="benefits-list d-flex flex-wrap list-unstyled mt-3">
                 <li class="me-1 mb-1"><button type="button" class="btn btn-sm badge rounded-pill btn-danger">8gb</button></li>
                 <li class="me-1 mb-1"><button type="button" class="btn btn-sm badge rounded-pill btn-danger">128gb</button></li>
                 <li class="me-1 mb-1"><button type="button" class="btn btn-sm badge rounded-pill btn-danger">Waterproof</button></li>
@@ -116,8 +117,54 @@
     </div>
   </div>
 
+
+  <div class="modal fade" id="edit-student-modal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editStudentModalLabel">Edit product</h5>
+         
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-form modal-body">
+          <form class="form-edit-modal">
+            <div class="mb-3">
+              <label for="product-title" class="form-label">Title</label>
+              <input type="text" class="form-control form-edit-name" id="product-title" placeholder="Falon telefon">
+            </div>
+            <div class="mb-3">
+              <label for="price" class="form-label">Narxi</label>
+              <input type="number" class="form-control form-edit-price" id="price" placeholder="12400000">
+            </div>
+            <div class="mb-3">
+              <label for="product-manufacturer" class="form-label">Manufacturer</label>
+              <select class="form-select form-edit-select" id="product-manufacturer">
+                <option  selected  value="0">Select a manufacturer</option>
+                <!-- manufacturers array bu yerga kelishi kerak -->
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="benefits" class="form-label">Benefits</label>
+              <input type="text" class="form-control form-edit-benefit" id="benefits" placeholder="150">
+
+              <ul class="form-edit-benefit-list d-flex flex-wrap list-unstyled mt-3">
+                <li class="me-1 mb-1"><button type="button" class="btn btn-sm badge rounded-pill btn-danger">8gb</button></li>
+                <li class="me-1 mb-1"><button type="button" class="btn btn-sm badge rounded-pill btn-danger">128gb</button></li>
+                <li class="me-1 mb-1"><button type="button" class="btn btn-sm badge rounded-pill btn-danger">Waterproof</button></li>
+                <li class="me-1 mb-1"><button type="button" class="btn btn-sm badge rounded-pill btn-danger">Falon yaxshi tarafi</button></li>
+              </ul>
+            </div>
+            <button type="submit" class="btn btn-primary d-block w-100 p-2">Edit product</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <template class="template">
-	<li class="card-list__item col-4">
+	<li class="card-list__item col-4" data-id="">
 		<div class="card">
 		  <img src="https://picsum.photos/300/200" alt="" class="card-img-top">
 		  <div class="card-body">
@@ -133,7 +180,7 @@
 			</ul>
 
 			<div class="position-absolute top-0 end-0 d-flex">
-			  <button class="btn rounded-0 btn-secondary"><i class="fa-solid fa-pen"></i></button>
+			  <button class="btn rounded-0 btn-secondary" data-bs-toggle="modal" data-bs-target="#edit-student-modal"><i class="fa-solid fa-pen" style="pointer-events: none;"></i></button>
 			  <button class="btn rounded-0 btn-danger btn__delete"><i class="fa-solid fa-trash" style="pointer-events: none;"></i></button>
 			</div>
 		  </div>
