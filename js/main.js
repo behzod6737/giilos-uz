@@ -65,7 +65,7 @@ const renderManufacturers = (manufacturers, goingElement) => {
   manufacturers.forEach((product) => {
     const newOption = document.createElement("option");
     newOption.textContent = product.name;
-    newOption.value = product.id;
+    newOption.value = product.name;
     selectFragment.append(newOption);
   });
   goingElement.append(selectFragment);
@@ -128,17 +128,16 @@ renderProduct(products, elProductList);
 
 const filterProducts = (e) => {
 	e.preventDefault()
-
+		
 	renderProduct(products.filter(product => {
+		let inputFilterSelect  = elinputFilterSelect.value ? elinputFilterSelect.value.toLowerCase() == product.model.toLowerCase() : true 
+	
 		if ( product.title.toLowerCase().includes(elInputFilterName.value.trim().toLowerCase()) && (+elinputFilterFrom.value ? +elinputFilterFrom.value : 0 ) <= product.price && 
-		 (+elinputFilterto.value ? +elinputFilterto.value : Infinity) >= product.price ) {
-			console.log(elinputFilterSelect.value);
+		 (+elinputFilterto.value ? +elinputFilterto.value : Infinity) >= product.price && inputFilterSelect ) {
 					return product
 		}
 	
 	}), elProductList)
-	
-	e.target.reset()
 	//  renderProduct(products.filter(product => product.title.toLowerCase().includes(elInputFilterName.value.toLowerCase().trim()), elProductList));
 	
 }
