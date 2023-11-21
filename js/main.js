@@ -123,12 +123,11 @@ renderProduct(products, elProductList);
 // ! filter product cards 
 
 const filterProducts = (event) => {
-	event.preventDefault()
-	
-	if (elInputFilterName.value.trim() === '') {
-	 return	renderProduct(products, elProductList);
-	}
 	const regExp = new RegExp( elInputFilterName.value.trim(), 'gi')
+	
+	if (regExp === '') {
+		return	renderProduct(products, elProductList);
+	}
 	renderProduct(products.filter(product => product.title.match(regExp)), elProductList)
 	event.target.reset()
 	//  renderProduct(products.filter(product => product.title.toLowerCase().includes(elInputFilterName.value.toLowerCase().trim()), elProductList));
@@ -150,21 +149,23 @@ const addProductCard = (event) => {
 		addNewBenefit(benefit, elFormAddBenefitList);
 	})
 
-	products.push({
-		id: products[products.length -1].id +1,
-		img,
-		title:elFormAddName.value,
-		model: selectedModal,
-		addedDate:new Date().toISOString(),
-		price:+elFormAddPrice.value,
-		benefits:allBenefits
-	});
-		renderProduct(products, elProductList);
-
+	let userConfirm = confirm('rostan ham yangi product qoshmoqchimisiz?')
+	if(userConfirm){
+		products.push({
+			id: products[products.length -1].id +1,
+			img,
+			title:elFormAddName.value,
+			model: selectedModal,
+			addedDate:new Date().toISOString(),
+			price:+elFormAddPrice.value,
+			benefits:allBenefits
+		});
+			renderProduct(products, elProductList);
+	
+		}else{
+			renderProduct(products, elProductList);
+		}
 	}
-
-
-	alert('rostan ham yangi product qoshmoqchimisiz?')
 	event.target.reset()
 }
 
@@ -215,4 +216,4 @@ const editDeleteFunc = (e) => {
 
 elProductList.addEventListener('click', editDeleteFunc)
 elFormAdd.addEventListener('submit' , addProductCard )
-elFormFilter.addEventListener('submit' , filterProducts)
+elFormFilter.addEventListener('input' , filterProducts)
