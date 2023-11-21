@@ -32,6 +32,9 @@ const addNewBenefit = (benefit, goingElement) => {
 // ! variables for dom node
 const elFormFilter = getElement('.filter-form')
 const elInputFilterName = getElement('.input-name__filter')
+const elinputFilterFrom = getElement('.form-input__from')
+const elinputFilterto = getElement('.form-input__to')
+const elinputFilterSelect = getElement('.form-filter__select')
 
 const elFormAdd = getElement('.add-form')
 const  elFormAddName = getElement('.form-add-name')
@@ -91,6 +94,7 @@ const createModalOption = (manufacturers, goingElement) => {
 createModalOption(manufacturers, elModalSelect);
 
 // ! rendering product card
+
 const renderProduct = (products, goingElement) => {
   goingElement.innerHTML = null;
   const fragment = document.createDocumentFragment();
@@ -122,14 +126,19 @@ renderProduct(products, elProductList);
 
 // ! filter product cards 
 
-const filterProducts = (event) => {
-	const regExp = new RegExp( elInputFilterName.value.trim(), 'gi')
+const filterProducts = (e) => {
+	e.preventDefault()
+
+	renderProduct(products.filter(product => {
+		if ( product.title.toLowerCase().includes(elInputFilterName.value.trim().toLowerCase()) && (+elinputFilterFrom.value ? +elinputFilterFrom.value : 0 ) <= product.price && 
+		 (+elinputFilterto.value ? +elinputFilterto.value : Infinity) >= product.price ) {
+			console.log(elinputFilterSelect.value);
+					return product
+		}
 	
-	if (regExp === '') {
-		return	renderProduct(products, elProductList);
-	}
-	renderProduct(products.filter(product => product.title.match(regExp)), elProductList)
-	event.target.reset()
+	}), elProductList)
+	
+	e.target.reset()
 	//  renderProduct(products.filter(product => product.title.toLowerCase().includes(elInputFilterName.value.toLowerCase().trim()), elProductList));
 	
 }
@@ -216,4 +225,4 @@ const editDeleteFunc = (e) => {
 
 elProductList.addEventListener('click', editDeleteFunc)
 elFormAdd.addEventListener('submit' , addProductCard )
-elFormFilter.addEventListener('input' , filterProducts)
+elFormFilter.addEventListener('submit' , filterProducts)
