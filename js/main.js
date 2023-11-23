@@ -67,7 +67,7 @@ const $productCount = getElement(".count");
 // ! rendering manufacture filter
 const renderManufacturers = (manufacturers, goingElement) => {
   goingElement.innerHTML = null;
-
+  goingElement.innerHTML = '<option value="0">All</option>'
   const selectFragment = document.createDocumentFragment();
   manufacturers.forEach((product) => {
     const newOption = document.createElement("option");
@@ -137,6 +137,7 @@ renderProduct(products, elProductList);
 
 // ! add product cards
 const addProductCard = (event) => {
+	localStorage.setItem('products' , JSON.stringify(products))
 	event.preventDefault()
 
 	if (elFormAddName.value.trim()) {
@@ -171,6 +172,7 @@ const addProductCard = (event) => {
 // !edit and delete product
 
 const editDeleteFunc = (e) => {
+	localStorage.setItem('products' , JSON.stringify(products))
 	if (e.target.matches('.btn__delete')) {
 		const productId = e.target.closest('.card-list__item').dataset.id 
 	
@@ -222,6 +224,7 @@ const editDeleteFunc = (e) => {
 // ! filter product cards 
 
 const filterProducts = (e) => {
+	localStorage.setItem('products' , JSON.stringify(products))
 	e.preventDefault()
 
  	let newProducts = [...products].sort((a , b) => {
@@ -239,10 +242,14 @@ const filterProducts = (e) => {
 
 	
 	renderProduct(newProducts.filter(product => {
-		let inputFilterSelect  = elinputFilterSelect.value ? elinputFilterSelect.value.toLowerCase() == product.model[0].toLowerCase() : true 
+		let newfilterSelect = ''
+		if (+elinputFilterSelect.value == 0) return product
+		else if( elinputFilterSelect.value.toLowerCase() == product.model[0].toLowerCase()) {
+			 newfilterSelect = elinputFilterSelect.value
+		}
 
 		if ( product.title.toLowerCase().includes(elInputFilterName.value.trim().toLowerCase()) && (+elinputFilterFrom.value ? +elinputFilterFrom.value : 0 ) <= product.price && 
-		 (+elinputFilterto.value ? +elinputFilterto.value : Infinity) >= product.price) {
+		 (+elinputFilterto.value ? +elinputFilterto.value : Infinity) >= product.price &&  newfilterSelect) {
 					return product
 		}
 	
