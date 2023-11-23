@@ -1,3 +1,10 @@
+// ! localStorage
+let products =  [] 
+
+if (localStorage.getItem('products')) {
+	products = JSON.parse(localStorage.getItem('products'))
+}
+
 // ! utils
 const getElement = (element, parentElement = document) =>
   parentElement.querySelector(element);
@@ -35,6 +42,7 @@ const elInputFilterName = getElement('.input-name__filter')
 const elinputFilterFrom = getElement('.form-input__from')
 const elinputFilterto = getElement('.form-input__to')
 const elinputFilterSelect = getElement('.form-filter__select')
+const elInputFilterSort = getElement('#sortby')
 
 const elFormAdd = getElement('.add-form')
 const  elFormAddName = getElement('.form-add-name')
@@ -59,7 +67,6 @@ const $productCount = getElement(".count");
 // ! rendering manufacture filter
 const renderManufacturers = (manufacturers, goingElement) => {
   goingElement.innerHTML = null;
-  goingElement.innerHTML = ' <option value="0">All</option>';
 
   const selectFragment = document.createDocumentFragment();
   manufacturers.forEach((product) => {
@@ -96,6 +103,7 @@ createModalOption(manufacturers, elModalSelect);
 // ! rendering product card
 
 const renderProduct = (products, goingElement) => {
+  localStorage.setItem('products' , JSON.stringify(products))
   goingElement.innerHTML = null;
   const fragment = document.createDocumentFragment();
   // count
@@ -106,11 +114,11 @@ const renderProduct = (products, goingElement) => {
     const template = elTemplate.cloneNode(true);
 
     getElement(".card-list__item", template).setAttribute("data-id", id);
-    template.querySelector(".card-img-top").src = img;
+    template.querySelector(".card-img-top").src = "https://picsum.photos/300/200";
     template.querySelector(".card-title").textContent = title;
     template.querySelector(".card-text").textContent = price.toLocaleString(
       "es-ES", { style: "currency", currency: "UZS" });
-    template.querySelector(".product-name").textContent = model;
+    template.querySelector(".product-name").textContent = model[0];
     template.querySelector(".product-date").textContent = fixDate(addedDate);
     benefits.forEach((benefit) => {
       createBenefitItem(benefit, template.querySelector(".benefit-list"));
@@ -124,23 +132,7 @@ const renderProduct = (products, goingElement) => {
 
 renderProduct(products, elProductList);
 
-// ! filter product cards 
 
-const filterProducts = (e) => {
-	e.preventDefault()
-		
-	renderProduct(products.filter(product => {
-		let inputFilterSelect  = elinputFilterSelect.value ? elinputFilterSelect.value.toLowerCase() == product.model.toLowerCase() : true 
-	
-		if ( product.title.toLowerCase().includes(elInputFilterName.value.trim().toLowerCase()) && (+elinputFilterFrom.value ? +elinputFilterFrom.value : 0 ) <= product.price && 
-		 (+elinputFilterto.value ? +elinputFilterto.value : Infinity) >= product.price && inputFilterSelect ) {
-					return product
-		}
-	
-	}), elProductList)
-	//  renderProduct(products.filter(product => product.title.toLowerCase().includes(elInputFilterName.value.toLowerCase().trim()), elProductList));
-	
-}
 
 
 // ! add product cards
@@ -148,11 +140,10 @@ const addProductCard = (event) => {
 	event.preventDefault()
 
 	if (elFormAddName.value.trim()) {
-	let [{img, ...rest}] = products
 	let manufacturerNames = manufacturers.map(manufacturer => manufacturer.name)
 	let selectedModal = manufacturerNames.filter(names =>  names.includes(elModalSelect.value))
 	let allBenefits = elFormAddBenefits.value.split(',')
-	
+	console.log(selectedModal);
 	allBenefits.forEach(benefit => {
 		addNewBenefit(benefit, elFormAddBenefitList);
 	})
@@ -160,8 +151,8 @@ const addProductCard = (event) => {
 	let userConfirm = confirm('rostan ham yangi product qoshmoqchimisiz?')
 	if(userConfirm){
 		products.push({
-			id: products[products.length -1].id +1,
-			img,
+			id: products[products.length -1]?.id ?? + 1,
+			img: "https://picsum.photos/300/200",
 			title:elFormAddName.value,
 			model: selectedModal,
 			addedDate:new Date().toISOString(),
@@ -182,6 +173,12 @@ const addProductCard = (event) => {
 const editDeleteFunc = (e) => {
 	if (e.target.matches('.btn__delete')) {
 		const productId = e.target.closest('.card-list__item').dataset.id 
+	
+		// ! my version 
+		// products = products.filter(product => product.id !== +productId) 
+		// renderProduct(products, elProductList);
+		
+		// ! teacher version 
 		const currentProduct = products.findIndex(product => product.id === +productId)
 		products.splice(currentProduct,1)
 		renderProduct(products, elProductList);
@@ -221,6 +218,38 @@ const editDeleteFunc = (e) => {
 	}
 }
 
+
+// ! filter product cards 
+
+const filterProducts = (e) => {
+	e.preventDefault()
+
+ 	let newProducts = [...products].sort((a , b) => {
+		switch (elInputFilterSort.value) {
+			case '1':
+				if(a.title < b.title ) return -1 
+				else if(a.title > b.title ) return 1 
+				else return 0 
+			case '2':
+				 return a.price - b.price 
+			case '3':
+				 return b.price - a.price 
+		}
+	})
+
+	
+	renderProduct(newProducts.filter(product => {
+		let inputFilterSelect  = elinputFilterSelect.value ? elinputFilterSelect.value.toLowerCase() == product.model[0].toLowerCase() : true 
+
+		if ( product.title.toLowerCase().includes(elInputFilterName.value.trim().toLowerCase()) && (+elinputFilterFrom.value ? +elinputFilterFrom.value : 0 ) <= product.price && 
+		 (+elinputFilterto.value ? +elinputFilterto.value : Infinity) >= product.price) {
+					return product
+		}
+	
+	}), elProductList)
+	//  renderProduct(products.filter(product => product.title.toLowerCase().includes(elInputFilterName.value.toLowerCase().trim()), elProductList));
+	
+}
 
 elProductList.addEventListener('click', editDeleteFunc)
 elFormAdd.addEventListener('submit' , addProductCard )
